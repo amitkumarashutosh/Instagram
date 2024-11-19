@@ -2,6 +2,7 @@ import "dotenv/config";
 import express, { urlencoded } from "express";
 import cors from "cors";
 import cookieParser from "cookie-parser";
+import connectDB from "./src/db/index.js";
 
 const app = express();
 const port = process.env.PORT || 3001;
@@ -21,6 +22,16 @@ app.get("/health", (req, res) => {
   res.json({ message: "Health OK!" });
 });
 
-app.listen(port, () => {
-  console.log(`App listening at port ${port}`);
-});
+import notFound from "./src/utils/notFound.js";
+
+app.use(notFound);
+
+connectDB()
+  .then(() => {
+    app.listen(port, () => {
+      console.log(`App listening at port ${port}`);
+    });
+  })
+  .catch(() => {
+    console.log("Connection failed!");
+  });
