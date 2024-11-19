@@ -22,6 +22,10 @@ app.get("/health", (req, res) => {
   res.json({ message: "Health OK!" });
 });
 
+//routes
+import userRoute from "./src/routes/user.route.js";
+app.use("/api/v1/user", userRoute);
+
 import notFound from "./src/utils/notFound.js";
 
 app.use(notFound);
