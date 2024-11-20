@@ -21,6 +21,6 @@ router
   .route("/profile/edit")
   .put(isAuthenticated, upload.single("avatar"), editProfile);
 router.route("/suggested").get(isAuthenticated, getSuggestedUsers);
-router.route("/followOrUnfollow/:id").post(isAuthenticated, followOrUnfollow);
+router.route("/ /:id").post(isAuthenticated, followOrUnfollow);
 
 export default router;
