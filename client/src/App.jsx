@@ -1,12 +1,35 @@
 import React from "react";
-import { Button } from "./components/ui/button";
+import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
+import Signup from "./pages/Signup";
+import Login from "./pages/Login";
+import MainLayout from "./layout/MainLayout";
+import Home from "./pages/Home";
+import Profile from "./components/Profile";
 
 const App = () => {
   return (
-    <div>
-      <p className="text-slate-600 text-lg">Instagram app clone</p>
-      <Button>Click me</Button>
-    </div>
+    <Router>
+      <Routes>
+        <Route
+          path="/"
+          element={
+            <MainLayout>
+              <Home />
+            </MainLayout>
+          }
+        />
+        <Route
+          path="/profile"
+          element={
+            <MainLayout>
+              <Profile />
+            </MainLayout>
+          }
+        />
+        <Route path="/signup" element={<Signup />} />
+        <Route path="/login" element={<Login />} />
+      </Routes>
+    </Router>
   );
 };
 
