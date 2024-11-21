@@ -24,8 +24,14 @@ app.get("/health", (req, res) => {
 
 //routes
 import userRoute from "./src/routes/user.route.js";
-app.use("/api/v1/user", userRoute);
+import postRoute from "./src/routes/post.route.js";
+import messageRoute from "./src/routes/message.route.js";
 
+app.use("/api/v1/user", userRoute);
+app.use("/api/v1/post", postRoute);
+app.use("/api/v1/message", messageRoute);
+
+//not found
 import notFound from "./src/utils/notFound.js";
 
 app.use(notFound);
