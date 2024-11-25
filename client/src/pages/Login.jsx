@@ -1,9 +1,11 @@
+import { setAuthUser } from "@/app/features/authSlice";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import axios from "axios";
 import { Loader2 } from "lucide-react";
 import { useState } from "react";
+import { useDispatch } from "react-redux";
 import { Link, useNavigate } from "react-router-dom";
 import { toast } from "sonner";
 
@@ -14,6 +16,7 @@ const Login = () => {
   });
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
+  const dispatch = useDispatch();
 
   const handleChange = (e) => {
     setInput({ ...input, [e.target.name]: e.target.value });
@@ -35,6 +38,7 @@ const Login = () => {
       );
 
       if (res.data.success) {
+        dispatch(setAuthUser(res.data.userData));
         navigate("/");
         toast.success(res.data.message);
         setInput({ email: "", password: "" });

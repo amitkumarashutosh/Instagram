@@ -11,28 +11,32 @@ import { Avatar, AvatarFallback, AvatarImage } from "./ui/avatar";
 import { toast } from "sonner";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
-
-const sidearItems = [
-  { icon: <Home />, text: "Home" },
-  { icon: <Search />, text: "Search" },
-  { icon: <TrendingUp />, text: "Explore" },
-  { icon: <MessageCircle />, text: "Messages" },
-  { icon: <Heart />, text: "Notifications" },
-  { icon: <PlusSquare />, text: "Create" },
-  {
-    icon: (
-      <Avatar className="w-7 h-7">
-        <AvatarImage src="https://github.com/shadcn.png" />
-        <AvatarFallback>CN</AvatarFallback>
-      </Avatar>
-    ),
-    text: "Profile",
-  },
-  { icon: <LogOut />, text: "Logout" },
-];
+import { useDispatch, useSelector } from "react-redux";
+import { setAuthUser } from "@/app/features/authSlice";
 
 const Sidebar = () => {
   const navigate = useNavigate();
+  const dispatch = useDispatch();
+  const { user } = useSelector((state) => state.auth);
+
+  const sidearItems = [
+    { icon: <Home />, text: "Home" },
+    { icon: <Search />, text: "Search" },
+    { icon: <TrendingUp />, text: "Explore" },
+    { icon: <MessageCircle />, text: "Messages" },
+    { icon: <Heart />, text: "Notifications" },
+    { icon: <PlusSquare />, text: "Create" },
+    {
+      icon: (
+        <Avatar className="w-7 h-7">
+          <AvatarImage src={user?.avatar} />
+          <AvatarFallback>CN</AvatarFallback>
+        </Avatar>
+      ),
+      text: "Profile",
+    },
+    { icon: <LogOut />, text: "Logout" },
+  ];
 
   const logoutHandler = async () => {
     try {
@@ -41,6 +45,7 @@ const Sidebar = () => {
       });
 
       if (res.data.success) {
+        dispatch(setAuthUser(null));
         navigate("/login");
         toast.success(res.data.message);
       }
