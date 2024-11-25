@@ -1,9 +1,9 @@
-import Sidebar from "@/components/Sidebar";
+import LeftSidebar from "@/components/LeftSidebar";
 
 const MainLayout = ({ children }) => {
   return (
     <div>
-      <Sidebar />
+      <LeftSidebar />
       {children}
     </div>
   );

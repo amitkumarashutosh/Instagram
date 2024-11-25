@@ -1,7 +1,15 @@
+import Feed from "@/components/Feed";
+import RightSidebar from "@/components/RightSidebar";
+
 const Home = () => {
   return (
     <div>
-      <p>Home</p>
+      <div className="flex">
+        <div className="flex-grow">
+          <Feed />
+        </div>
+        <RightSidebar />
+      </div>
     </div>
   );
 };
