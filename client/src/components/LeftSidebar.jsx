@@ -13,11 +13,14 @@ import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import { useDispatch, useSelector } from "react-redux";
 import { setAuthUser } from "@/app/features/authSlice";
+import { useState } from "react";
+import CreatePost from "./CreatePost";
 
 const Sidebar = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const { user } = useSelector((state) => state.auth);
+  const [open, setOpen] = useState(false);
 
   const sidearItems = [
     { icon: <Home />, text: "Home" },
@@ -57,6 +60,7 @@ const Sidebar = () => {
 
   const sidebarHandler = (textType) => {
     if (textType === "Logout") logoutHandler();
+    else if (textType === "Create") setOpen(true);
   };
 
   return (
@@ -78,6 +82,8 @@ const Sidebar = () => {
           })}
         </div>
       </div>
+
+      <CreatePost open={open} setOpen={setOpen} />
     </div>
   );
 };

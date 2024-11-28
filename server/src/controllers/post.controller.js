@@ -2,6 +2,7 @@ import sharp from "sharp";
 import cloudinary from "../utils/cloudinary.js";
 import { Post } from "../models/post.model.js";
 import { User } from "../models/user.model.js";
+import { Comment } from "../models/comment.model.js";
 
 const createPost = async (req, res) => {
   try {
@@ -9,7 +10,7 @@ const createPost = async (req, res) => {
     const image = req.file;
     const authorId = req.id;
 
-    if (image) {
+    if (!image) {
       return res
         .status(400)
         .json({ message: "Image required", success: false });
@@ -53,16 +54,17 @@ const getAllPosts = async (req, res) => {
   try {
     const posts = await Post.find({})
       .sort({ createdAt: -1 })
-      .populate({ path: "author", select: "username, avatar" })
-      .populate({
-        path: "comments",
-        sort: { createdAt: -1 },
-        populate: {
-          path: "author",
-          select: "username, avatar",
+      .populate({ path: "author", select: "username avatar" })
+      .populate([
+        {
+          path: "comments",
+          sort: { createdAt: -1 },
+          populate: {
+            path: "author",
+            select: "username avatar",
+          },
         },
-      });
-
+      ]);
     return res.status(200).json({ posts, success: true });
   } catch (error) {
     console.log(error);
@@ -148,16 +150,19 @@ const addComment = async (req, res) => {
     const { text } = req.body;
     if (!text) {
       return res
-        .status(200)
-        .json({ message: "text is required", success: false });
+        .status(400)
+        .json({ message: "Text is required", success: false });
     }
-    const comment = await Comment.create({
+
+    let comment = await Comment.create({
       text,
       author: userId,
       post: postId,
-    }).populate({
+    });
+
+    comment = await Comment.findById(comment._id).populate({
       path: "author",
-      select: "username,avatar",
+      select: "username avatar",
     });
 
     post.comments.push(comment._id);
@@ -168,6 +173,9 @@ const addComment = async (req, res) => {
       .json({ message: "Comment added", comment, success: true });
   } catch (error) {
     console.log(error);
+    return res
+      .status(500)
+      .json({ message: "Internal server error", success: false });
   }
 };
 

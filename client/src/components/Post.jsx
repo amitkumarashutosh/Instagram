@@ -5,14 +5,13 @@ import { Bookmark, MessageCircle, MoreHorizontal, Send } from "lucide-react";
 import { Button } from "./ui/button";
 import { FaHeart, FaRegHeart } from "react-icons/fa";
 import CommentDialog from "./CommentDialog";
-import { toast } from "sonner";
 
-const Post = () => {
+const Post = ({ post }) => {
   const [text, setText] = useState("");
   const [open, setOpen] = useState(false);
 
   const changeEventHandler = (e) => {
-    const inputText = e.target.value.trim();
+    const inputText = e.target.value;
     setText(inputText);
   };
 
@@ -21,10 +20,10 @@ const Post = () => {
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-2">
           <Avatar>
-            <AvatarImage src="" alt="post_image" />
+            <AvatarImage src={post.author?.avatar} alt="post_image" />
             <AvatarFallback>CN</AvatarFallback>
           </Avatar>
-          <h1>username</h1>
+          <h1>{post.author?.username}</h1>
         </div>
         <Dialog>
           <DialogTrigger asChild>
@@ -48,7 +47,7 @@ const Post = () => {
       </div>
       <img
         className="rounded-sm my-2 w-full aspect-square object-cover"
-        src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcS5ZJVlov_JoiTi4y4Z5WgAdKlgZu1tNRQ9Iw&s"
+        src={post?.image}
       />
 
       <div className="flex items-center justify-between my-2">
@@ -65,16 +64,16 @@ const Post = () => {
         </div>
         <Bookmark className="cursor-pointer hover:text-gray-600" />
       </div>
-      <span className="font-medium block mb-2">1K likes</span>
+      <span className="font-medium block mb-2">{post.likes.length} likes</span>
       <p>
-        <span className="font-medium mr-2">username </span>
-        caption
+        <span className="font-medium mr-2">{post.author?.username}</span>
+        {post.caption}
       </p>
       <span
         className="cursor-pointer text-sm text-gray-500"
         onClick={() => setOpen(true)}
       >
-        View all 10 comments
+        View all {post.comments.length} comments
       </span>
       <CommentDialog open={open} setOpen={setOpen} />
       <div className="flex justify-between">

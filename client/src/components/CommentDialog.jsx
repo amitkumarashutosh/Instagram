@@ -5,11 +5,13 @@ import { DialogTrigger } from "@radix-ui/react-dialog";
 import { MoreHorizontal } from "lucide-react";
 import { Button } from "./ui/button";
 import { useState } from "react";
+import { useSelector } from "react-redux";
 
 const CommentDialog = ({ open, setOpen }) => {
   const [text, setText] = useState("");
+  const { user } = useSelector((state) => state.auth);
   const changeHandler = (e) => {
-    const inputText = e.target.value.trim();
+    const inputText = e.target.value;
     setText(inputText);
   };
 
@@ -36,13 +38,15 @@ const CommentDialog = ({ open, setOpen }) => {
               <div className="flex gap-3 items-center">
                 <Link>
                   <Avatar>
-                    <AvatarImage src="" />
+                    <AvatarImage src={user?.avatar} />
                     <AvatarFallback>CN</AvatarFallback>
                   </Avatar>
                 </Link>
                 <div>
-                  <Link className="font-semibold text-xs">Username</Link>
-                  {/* <span>Bio here...</span> */}
+                  <Link className="font-semibold text-xs">
+                    {user?.username}
+                  </Link>
+                  <span>{user?.bio}</span>
                 </div>
               </div>
               <Dialog>
