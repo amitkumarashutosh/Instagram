@@ -107,7 +107,7 @@ const likePost = async (req, res) => {
         .json({ message: "Post not found", success: false });
     }
     await post.updateOne({ $addToSet: { likes: userId } });
-    post.save();
+    await post.save();
 
     return res.status(200).json({ message: "Post liked", success: true });
   } catch (error) {
@@ -127,7 +127,7 @@ const dislikePost = async (req, res) => {
         .json({ message: "Post not found", success: false });
     }
     await post.updateOne({ $pull: { likes: userId } });
-    post.save();
+    await post.save();
 
     return res.status(200).json({ message: "Post disliked", success: true });
   } catch (error) {
