@@ -4,7 +4,7 @@ import Signup from "./pages/Signup";
 import Login from "./pages/Login";
 import MainLayout from "./layout/MainLayout";
 import Home from "./pages/Home";
-import Profile from "./components/Profile";
+import Profile from "./pages/Profile";
 
 const App = () => {
   return (
@@ -19,7 +19,7 @@ const App = () => {
           }
         />
         <Route
-          path="/profile"
+          path="/profile/:id"
           element={
             <MainLayout>
               <Profile />
