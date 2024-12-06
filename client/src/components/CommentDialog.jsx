@@ -4,19 +4,59 @@ import { Dialog, DialogContent } from "./ui/dialog";
 import { DialogTrigger } from "@radix-ui/react-dialog";
 import { MoreHorizontal } from "lucide-react";
 import { Button } from "./ui/button";
-import { useState } from "react";
-import { useSelector } from "react-redux";
+import { useEffect, useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import Comment from "./Comment";
+import axios from "axios";
+import { toast } from "sonner";
+import { setPosts } from "@/app/features/postSlice";
 
 const CommentDialog = ({ open, setOpen }) => {
   const [text, setText] = useState("");
   const { user } = useSelector((state) => state.auth);
+  const { selectedPost, posts } = useSelector((state) => state.post);
+  const dispatch = useDispatch();
+  const [comment, setComment] = useState([]);
   const changeHandler = (e) => {
     const inputText = e.target.value;
     setText(inputText);
   };
 
-  const commentHandler = () => {
-    console.log(text);
+  useEffect(() => {
+    if (selectedPost) {
+      setComment(selectedPost.comments);
+    }
+  }, [selectedPost]);
+
+  const commentHandler = async () => {
+    try {
+      const res = await axios.post(
+        `http://localhost:3000/api/v1/post/comment/${selectedPost._id}`,
+        { text },
+        {
+          headers: {
+            "Content-Type": "application/json",
+          },
+          withCredentials: true,
+        }
+      );
+
+      if (res.data.success) {
+        const updatedCommentData = [...comment, res.data.comment];
+        setComment(updatedCommentData);
+
+        const updatedPostData = posts.map((p) =>
+          p._id === selectedPost._id
+            ? { ...p, comments: updatedCommentData }
+            : p
+        );
+        dispatch(setPosts(updatedPostData));
+        toast.success(res.data.message);
+        setText("");
+      }
+    } catch (error) {
+      console.log(error);
+    }
   };
 
   return (
@@ -29,7 +69,7 @@ const CommentDialog = ({ open, setOpen }) => {
           <div className="w-1/2">
             <img
               className="w-full h-full object-cover rounded-l-lg"
-              src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcS5ZJVlov_JoiTi4y4Z5WgAdKlgZu1tNRQ9Iw&s"
+              src={selectedPost?.image}
             />
           </div>
 
@@ -38,15 +78,14 @@ const CommentDialog = ({ open, setOpen }) => {
               <div className="flex gap-3 items-center">
                 <Link>
                   <Avatar>
-                    <AvatarImage src={user?.avatar} />
+                    <AvatarImage src={selectedPost?.author?.avatar} />
                     <AvatarFallback>CN</AvatarFallback>
                   </Avatar>
                 </Link>
                 <div>
                   <Link className="font-semibold text-xs">
-                    {user?.username}
+                    {selectedPost?.author?.username}
                   </Link>
-                  <span>{user?.bio}</span>
                 </div>
               </div>
               <Dialog>
@@ -62,7 +101,11 @@ const CommentDialog = ({ open, setOpen }) => {
               </Dialog>
             </div>
             <hr />
-            <div className="flex-1 overflow-y-auto max-h-96 p-4">comments</div>
+            <div className="flex-1 overflow-y-auto max-h-96 p-4">
+              {comment.map((comment) => (
+                <Comment key={comment._id} comment={comment} />
+              ))}
+            </div>
             <div className="p-4 flex items-center gap-2">
               <input
                 type="text"

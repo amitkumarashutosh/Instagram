@@ -8,7 +8,12 @@ import CommentDialog from "./CommentDialog";
 import { useDispatch, useSelector } from "react-redux";
 import axios from "axios";
 import { toast } from "sonner";
-import { deletePosts, setPosts } from "@/app/features/postSlice";
+import {
+  deletePosts,
+  setPosts,
+  setSelectedPost,
+} from "@/app/features/postSlice";
+import { Badge } from "./ui/badge";
 
 const Post = ({ post }) => {
   const [text, setText] = useState("");
@@ -111,6 +116,9 @@ const Post = ({ post }) => {
             <AvatarFallback>CN</AvatarFallback>
           </Avatar>
           <h1>{post.author?.username}</h1>
+          {user?._id == post?.author?._id && (
+            <Badge variant="secondary">Author</Badge>
+          )}
         </div>
         <Dialog>
           <DialogTrigger asChild>
@@ -159,7 +167,10 @@ const Post = ({ post }) => {
             />
           )}
           <MessageCircle
-            onClick={() => setOpen(true)}
+            onClick={() => {
+              dispatch(setSelectedPost(post));
+              setOpen(true);
+            }}
             className="cursor-pointer hover:text-gray-600"
           />
           <Send className="cursor-pointer hover:text-gray-600" />
@@ -171,12 +182,14 @@ const Post = ({ post }) => {
         <span className="font-medium mr-2">{post.author?.username}</span>
         {post.caption}
       </p>
-      <span
-        className="cursor-pointer text-sm text-gray-500"
-        onClick={() => setOpen(true)}
-      >
-        View all {comment.length} comments
-      </span>
+      {comment.length > 0 && (
+        <span
+          className="cursor-pointer text-sm text-gray-500"
+          onClick={() => setOpen(true)}
+        >
+          View all {comment.length} comments
+        </span>
+      )}
       <CommentDialog open={open} setOpen={setOpen} />
       <div className="flex justify-between">
         <input
