@@ -3,8 +3,8 @@ import express, { urlencoded } from "express";
 import cors from "cors";
 import cookieParser from "cookie-parser";
 import connectDB from "./src/db/index.js";
+import { app, server } from "./src/socket/socket.js";
 
-const app = express();
 const port = process.env.PORT || 3001;
 
 //middlewares
@@ -38,7 +38,7 @@ app.use(notFound);
 
 connectDB()
   .then(() => {
-    app.listen(port, () => {
+    server.listen(port, () => {
       console.log(`App listening at port ${port}`);
     });
   })

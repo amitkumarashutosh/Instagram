@@ -43,7 +43,7 @@ const Post = ({ post }) => {
         setPostLiked(updatedLikes);
         setLiked(!liked);
 
-        const updatedLikedData = posts.map((p) =>
+        const updatedLikedData = posts?.map((p) =>
           p._id === post._id
             ? {
                 ...p,

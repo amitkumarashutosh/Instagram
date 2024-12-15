@@ -5,7 +5,7 @@ const Posts = () => {
   const { posts } = useSelector((state) => state.post);
   return (
     <div>
-      {posts.map((post) => (
+      {posts?.map((post) => (
         <Post key={post._id} post={post} />
       ))}
     </div>
